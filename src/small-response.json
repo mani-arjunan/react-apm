@@ -1,0 +1,63 @@
+{
+  "APM_1": {
+      "accounts": [
+          {
+              "accountNumber": "1",
+              "accountName": "",
+              "displayName": "",
+              "regions": [
+                  "region-2"
+              ]
+          }
+      ],
+      "criticality": "business-1"
+  },
+  "APM_3": {
+      "accounts": [
+          {
+              "accountNumber": "3",
+              "accountName": "",
+              "displayName": "",
+              "regions": [
+                  "region-1",
+                  "region-2"
+              ]
+          },
+          {
+              "accountNumber": "1",
+              "accountName": "",
+              "displayName": "",
+              "regions": [
+                  "region-1",
+                  "region-2"
+              ]
+          }
+
+      ],
+      "criticality": "business-1"
+  },
+  "APM_2": {
+      "accounts": [
+          {
+              "accountNumber": "2",
+              "accountName": "",
+              "displayName": "",
+              "regions": [
+                  "region-3",
+                  "region-2"
+              ]
+          },
+          {
+              "accountNumber": "1",
+              "accountName": "",
+              "displayName": "",
+              "regions": [
+                  "region-1",
+                  "region-2"
+              ]
+          }
+
+      ],
+      "criticality": "business-1"
+  }
+}
