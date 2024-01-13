@@ -1,9 +1,10 @@
+import React from "react";
 import { useState } from "react";
 import "./App.css";
-import json from "./response.json";
-// import json from "./small-response.json";
+// import json from "./response.json";
+import json from "./small-response.json";
 
-// Can be optimized 
+// Can be optimized
 const formApmMap = (json) => {
   let accountMap = {};
   let apmMap = {};
@@ -43,16 +44,28 @@ const formApmMap = (json) => {
         }
       }
       if (businessMap[json[apm].criticality]) {
-        if (!businessMap[json[apm].criticality].account.includes(account.accountNumber)) {
-          businessMap[json[apm].criticality].account.push(account.accountNumber);
+        if (
+          !businessMap[json[apm].criticality].account.includes(
+            account.accountNumber
+          )
+        ) {
+          businessMap[json[apm].criticality].account.push(
+            account.accountNumber
+          );
         }
       }
       if (accountMap[account.accountNumber]) {
         if (!accountMap[account.accountNumber].apm.includes(apm)) {
           accountMap[account.accountNumber].apm.push(apm);
         }
-        if (!accountMap[account.accountNumber].business.includes(json[apm].criticality)) {
-          accountMap[account.accountNumber].business.push(json[apm].criticality);
+        if (
+          !accountMap[account.accountNumber].business.includes(
+            json[apm].criticality
+          )
+        ) {
+          accountMap[account.accountNumber].business.push(
+            json[apm].criticality
+          );
         }
       } else {
         accountMap[account.accountNumber] = {
@@ -129,37 +142,46 @@ function App() {
 
   const handleOnChange = (data, checked) => {
     const rest = responseData[current][data];
+    const data1 = Object.keys(responseData[current])
+      .filter((d) => d !== data && responseData[current][d].checked)
+      .map((d) => responseData[current][d]);
     const restKeys = Object.keys(rest);
     let updatedResponseData = {
-      ...responseData
+      ...responseData,
     };
     restKeys
-      .filter((k) => k !== "checked")
+      .filter((k) => {
+        return k !== "checked";
+      })
       .forEach((curr) => {
         const currValues = rest[curr].map((d) => ({
           key: d,
-          value: responseData[curr][d]
+          value: responseData[curr][d],
         }));
-        const filteredKey = currValues.filter(({key, value}) => {
-          if(value[current].filter(v => v !== data).every(v => !responseData[current][v].checked)) {
-            return true
-          }
-        })
-        let obj = {}
-        filteredKey.forEach(f => {
+        const allowedValues = data1.flatMap((d) => d[curr]);
+        allowedValues.map((d) => {
+          currValues.push({
+            key: d,
+            checked: true,
+            value: responseData[curr][d],
+          });
+        });
+
+        const filteredKey = currValues;
+        let obj = {};
+        filteredKey.forEach((f) => {
           obj = {
             ...obj,
             [f.key]: {
               ...f.value,
-              checked: !checked
-            }
-          }
-        })
-        
+              checked: f.checked !== undefined ? f.checked : !f.value.checked,
+            },
+          };
+        });
         updatedResponseData[curr] = {
           ...updatedResponseData[curr],
-          ...obj
-        }
+          ...obj,
+        };
       });
     setResponseData((prev) => {
       return {
@@ -168,7 +190,7 @@ function App() {
           ...prev[current],
           [data]: {
             ...prev[current][data],
-            checked: !prev[current][data].checked,
+            checked,
           },
         },
       };
@@ -201,17 +223,15 @@ function App() {
       </div>
       {current
         ? Object.keys(responseData[current]).map((key) => (
-          <div class="input">
-            <input
-              onChange={() =>
-                handleOnChange(key, responseData[current][key].checked)
-              }
-              type="checkbox"
-              checked={responseData[current][key].checked}
-            />
-            <label>{key}</label>
-          </div>
-        ))
+            <div class="input">
+              <input
+                onChange={(event) => handleOnChange(key, event.target.checked)}
+                type="checkbox"
+                checked={responseData[current][key].checked}
+              />
+              <label>{key}</label>
+            </div>
+          ))
         : null}
     </div>
   );
